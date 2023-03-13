@@ -1,29 +1,45 @@
 # Exploring the Causal Effect of Serum Zinc Levels on Risk of Type 1 Diabetes: A Mendelian Randomization Study
 
-# Project description
+
+
+
+
+
+
+
+## Project description
 Mendelian randomization (MR) is a statistical method that aims to establish causal relationships between a risk factor and an outcome. This project uses MR to investigate the causal effect of serum zinc levels on risk of Type 1 diabetes mellitus using genetic variants from Genome-wide association study (GWAS) summary statistics.
 
 ## Getting started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-# Prerequisites
+## Prerequisites
 To run this project, you will need:
 
-R programming language (version 3.5 or later)
-RStudio (version 1.2 or later)
-Required R packages (listed in the requirements.R file)
-Installing
-Clone this repository to your local machine.
-Open RStudio and set the working directory to the cloned repository.
-Install the required packages by running source("requirements.R").
-Data
-This project uses publicly available genetic data from the UK Biobank. The data can be obtained from the UK Biobank website (https://www.ukbiobank.ac.uk/).
+* R software (version 4.0 or later)
+* RStudio (version 1.2 or later)
+* R packages
+  * TwoSampleMR version 0.5.6 
+  * plyr 
 
-Running the Analysis
-Open the analysis.Rmd file in RStudio.
-Knit the file to generate the analysis report (analysis.html).
-View the report to see the results of the MR analysis.
-Project Structure
+## Installing
+* Clone this repository to your local machine.
+* Open RStudio and set the working directory to the cloned repository.
+* Install the required packages by running "install.packages('plyr', repos = "http://cran.us.r-project.org")
+remotes::install_github("MRCIEU/TwoSampleMR")".
+
+## Data
+This project uses publicly available genetic data from the IEU OpenGWAS project. The data can be obtained from the OpenGWAS website (https://gwas.mrcieu.ac.uk/) using the dataset IDs indicated in the R script (mr_T1d.R).
+
+## Running the Analysis
+* Open the mr_T1d.Rmd file in RStudio.
+* Knit the file to generate the analysis report (mr_T1d.html).
+* View the report to see the results of the MR analysis.
+
+## Project Workflow
+
+![Screenshot 2023-03-13 at 17 52 09](https://user-images.githubusercontent.com/101923400/224738673-d6f862ee-c030-4ace-ab25-de765b90bf1a.png)
+
 graphql
 Copy code
 ├── analysis.Rmd             # R Markdown file containing the MR analysis
