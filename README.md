@@ -16,7 +16,6 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## Prerequisites
 To run this project, you will need:
-
 * R software (version 4.0 or later)
 * RStudio (version 1.2 or later)
 * R packages
@@ -49,7 +48,10 @@ This repository is structured as follows:
 * mr_T1d.html: Contains the MR analysis results.
 * README.md: Contains a summary of the project documentation.
 
-## Authors
+## Authorss
+* Onan Mulumba
+* Lydia Abolo
+* Joachim Ssenkaali
 
 
 ## Acknowledgments
@@ -57,10 +59,11 @@ We thank IEU OpenGWAS for providing access to their data.
 
 ## References
 * Smith GD, Ebrahim S. Mendelian randomization: prospects, potentials, and limitations. Int J Epidemiol. 2004;33(1):30-42.
-
 * Burgess S, Thompson SG. Mendelian randomization: methods for using genetic variants in causal estimation. Chapman & Hall/CRC Press; 2015.
-
 * Pierce, Brandon L, and Stephen Burgess. 2013. “Efficient design for Mendelian randomization studies: subsample and 2-sample instrumental variable estimators.” American Journal of Epidemiology 178 (7): 1177–84. https://doi.org/10.1093/aje/kwt084.
+* https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication
+
+
 
 
 
