@@ -24,7 +24,7 @@ remotes::install_github("MRCIEU/TwoSampleMR")".
 This project uses publicly available genetic data from the IEU OpenGWAS project. The data can be obtained from the OpenGWAS website (https://gwas.mrcieu.ac.uk/) using the dataset IDs indicated in the R script (mr_T1d.Rmd).
 
 ## Running the Analysis
-* Open the mr_T1d.Rmd file in RStudio.
+* Open the mr_T1d.Rmd file in the scripts folder in RStudio.
 * Knit the file to generate the analysis report (mr_T1d.html).
 * View the report to see the results of the MR analysis.
 
@@ -35,8 +35,8 @@ This project uses publicly available genetic data from the IEU OpenGWAS project.
 This repository is structured as follows:
 
 * data: Contains the raw data files used in the analysis.
-* mr_T1D.Rmd: Contains the instrumental variable selection and statistical analysis scripts.
-* mr_T1d.html: Contains the MR analysis results.
+* scripts: Contains the instrumental variable selection and statistical analysis scripts.
+* output: Contains the MR analysis results.
 * README.md: Contains a summary of the project documentation.
 
 ## Authors
