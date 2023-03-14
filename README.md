@@ -1,34 +1,26 @@
 # Exploring the Causal Effect of Serum Zinc Levels on Risk of Type 1 Diabetes: A Mendelian Randomization Study
 
 ## Background
-
-
-
-
-
-
+Type 1 diabetes mellitus (T1D) is a chronic autoimmune disease characterized by the destruction of insulin-producing pancreatic beta cells and an ensuing lack of or low insulin. Previous research on risk factors for diabetes have shown that abnormalities in serum levels of essential trace elements may be associated with T1D. As demonstrated by previous studies, zinc metabolism appears to be altered in prediabetes and diabetes indicating its likely role in the pathophysiology of  T1D. While observational studies have been instrumental in decoding the association between zinc deficiency and diabetes, these studies are limited by potential confounders and reverse causality. A limited number of randomized controlled trials (RCTs) investigating glycemic control and zinc supplementation have been conducted. However, there’s a lack of agreement on the effect of zinc on glycemic control. An alternative approach to inferring causality between exposures and outcomes is Mendelian randomization (MR). MR studies use genetic variants that serve as a robust proxy for an environmentally modifiable exposure in order to make causal inferences about the outcome.
 
 ## Project description
-Mendelian randomization (MR) is a statistical method that aims to establish causal relationships between a risk factor and an outcome. This project uses MR to investigate the causal effect of serum zinc levels on risk of Type 1 diabetes mellitus using genetic variants from Genome-wide association study (GWAS) summary statistics.
+This project uses MR to investigate the causal effect of serum zinc levels on risk of Type 1 diabetes mellitus using genetic variants from Genome-wide association study (GWAS) summary statistics. 
 
 ## Getting started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-
-## Prerequisites
+#### Prerequisites
 To run this project, you will need:
 * R software (version 4.0 or later)
 * RStudio (version 1.2 or later)
 * R packages
   * TwoSampleMR version 0.5.6 
   * plyr 
-
-## Installing
+#### Installing
 * Clone this repository to your local machine.
 * Open RStudio and set the working directory to the cloned repository.
 * Install the required packages by running "install.packages('plyr', repos = "http://cran.us.r-project.org")
 remotes::install_github("MRCIEU/TwoSampleMR")".
-
-## Data
+#### Data
 This project uses publicly available genetic data from the IEU OpenGWAS project. The data can be obtained from the OpenGWAS website (https://gwas.mrcieu.ac.uk/) using the dataset IDs indicated in the R script (mr_T1d.Rmd).
 
 ## Running the Analysis
@@ -37,8 +29,7 @@ This project uses publicly available genetic data from the IEU OpenGWAS project.
 * View the report to see the results of the MR analysis.
 
 ## Project Workflow
-
-![Screenshot 2023-03-13 at 17 52 09](https://user-images.githubusercontent.com/101923400/224738673-d6f862ee-c030-4ace-ab25-de765b90bf1a.png)
+![Screenshot 2023-03-14 at 11 30 20](https://user-images.githubusercontent.com/101923400/224941626-07e0d9c3-649a-4843-a41a-3d2c17259ef7.png)
 
 ## Project Structure
 This repository is structured as follows:
@@ -49,9 +40,9 @@ This repository is structured as follows:
 * README.md: Contains a summary of the project documentation.
 
 ## Authors
+* Joachim Ssenkaali
 * Onan Mulumba
 * Lydia Abolo
-* Joachim Ssenkaali
 
 
 ## Acknowledgments
