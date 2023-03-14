@@ -48,7 +48,7 @@ This repository is structured as follows:
 * mr_T1d.html: Contains the MR analysis results.
 * README.md: Contains a summary of the project documentation.
 
-## Authorss
+## Authors
 * Onan Mulumba
 * Lydia Abolo
 * Joachim Ssenkaali
