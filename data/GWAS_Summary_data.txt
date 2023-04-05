@@ -1,0 +1,2 @@
+The data that was used for the analysis was obtained from OpenGWAS (https://gwas.mrcieu.ac.uk/datasets/), a repository of GWAS summary statistics. The data is directly accessible through the TwoSampleMR package that requires the user to input the GWAS ID.
+For this analysis, the OpenGWAS datasets had IDs met-d-Omega_3 and ebi-a-GCST010681
