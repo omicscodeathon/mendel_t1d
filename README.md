@@ -1,10 +1,10 @@
-# Exploring the Causal Effect of Serum Zinc Levels on Risk of Type 1 Diabetes: A Mendelian Randomization Study
+# Exploring the Causal Effect of Omega-3 Fatty acid  Levels on Risk of Type 1 Diabetes: A Mendelian Randomization Study
 
 ## Background
 Type 1 diabetes mellitus (T1D) is a chronic autoimmune disease characterized by the destruction of insulin-producing pancreatic beta cells and an ensuing lack of or low insulin. Previous research on risk factors for diabetes have shown that abnormalities in serum levels of essential trace elements may be associated with T1D. As demonstrated by previous studies, zinc metabolism appears to be altered in prediabetes and diabetes indicating its likely role in the pathophysiology of  T1D. While observational studies have been instrumental in decoding the association between zinc deficiency and diabetes, these studies are limited by potential confounders and reverse causality. A limited number of randomized controlled trials (RCTs) investigating glycemic control and zinc supplementation have been conducted. However, there’s a lack of agreement on the effect of zinc on glycemic control. An alternative approach to inferring causality between exposures and outcomes is Mendelian randomization (MR). MR studies use genetic variants that serve as a robust proxy for an environmentally modifiable exposure in order to make causal inferences about the outcome.
 
 ## Project description
-This project uses MR to investigate the causal effect of serum zinc levels on risk of Type 1 diabetes mellitus using genetic variants from Genome-wide association study (GWAS) summary statistics. 
+This project uses MR to investigate the causal effect of omega-3 levels on risk of Type 1 diabetes mellitus using genetic variants from Genome-wide association study (GWAS) summary statistics. 
 
 ## Getting started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
@@ -29,7 +29,8 @@ This project uses publicly available genetic data from the IEU OpenGWAS project.
 * View the report to see the results of the MR analysis.
 
 ## Project Workflow
-![Screenshot 2023-03-14 at 11 30 20](https://user-images.githubusercontent.com/101923400/224941626-07e0d9c3-649a-4843-a41a-3d2c17259ef7.png)
+<img width="589" alt="Screenshot 2023-04-05 at 10 16 26" src="https://user-images.githubusercontent.com/101923400/230008866-7b354de6-62fd-41dc-8b2f-d687467347f5.png">
+
 
 ## Project Structure
 This repository is structured as follows:
