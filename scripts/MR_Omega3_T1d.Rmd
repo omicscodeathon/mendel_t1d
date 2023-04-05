@@ -1,0 +1,318 @@
+---
+title: "Omega-3-T1D Mendelian Randomization"
+author: "Lydia Abolo, Joachim Ssenkaali, Onan Mulumba"
+date: "`r Sys.Date()`"
+output: pdf_document
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r, echo = F}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=80),tidy=TRUE)
+```
+
+This R Markdown details a Mendelian randomization(MR) analysis for a study that aims to investigate the causal association between omega-3 fatty acids and type 1 diabetes (T1D) using a two-sample MR approach. MR utilizes genetic variants as instrumental variables to estimate causal effects between an exposure and an outcome. The hypothesis being tested in this study is that omega-3 fatty acids may have a protective effect against T1D risk.
+
+The data used in this analysis includes publicly available GWAS summary data from the OpenGWAS repository. The TwoSampleMR package, which provides functions for performing two-sample Mendelian randomization analyses, is used. 
+
+## INSTALL PACKAGES
+```{r installing packages, include=TRUE}
+
+# Install TwoSampleMR package
+
+install.packages('plyr', repos = "http://cran.us.r-project.org")
+remotes::install_github("MRCIEU/TwoSampleMR")
+library(TwoSampleMR)
+```
+
+## EXTRACTING EXPOSURE INSTRUMENTS
+The 'extract_instruments' function searches for  GWAS-significant snps from the supplied dataset at a given p-value threshold and applies linkage disequilibrium (LD) based clumping to select only the independent SNPs that show significant associations with the exposure.
+```{r exposures, include=TRUE}
+exposure_om <-extract_instruments("met-d-Omega_3")
+```
+
+## EXTRACTING SNP EFFECTS FROM OUTCOME GWAS
+The 'extract_outcome_data' function queries the outcome dataset against the exposure data to extract snp effects from the outcome GWAS.
+```{r outcome, include=TRUE}
+
+outcome_om <- extract_outcome_data(snps=exposure_om$SNP, outcomes = "ebi-a-GCST010681")
+```
+
+## HARMONIZING EXPOSURE AND OUTCOME INSTRUMENTS
+At this stage, the outcome and exposure snps are matched so that they are relative to the same allele. 'action=3' corrects strands for non-palindromic SNPs, and drops all palindromic SNPs from the analysis.
+```{r harmonize, include=TRUE}
+
+dat_om <- harmonise_data(exposure_om, outcome_om, action = 3)
+
+```
+
+## DETERMINING VARIANCE EXPLAINED BY INSTRUMENTAL VARIABLES
+The F-statistic is calculated to determine if the instrumental variables explain a substantial proportion of the variance in the exposure and that the MR study has enough power to detect a causal effect of the exposure on the outcome. 
+```{r F_statistic, include=TRUE}
+
+# Extract effect allele and minor allele frequencies
+dat_om$EAF2 <- (1 - dat_om$eaf.exposure)
+dat_om$MAF <- pmin(dat_om$eaf.exposure, dat_om$EAF2)
+
+#Function to determine the proportion of variance explained
+PVEfx <- function(BETA, MAF, SE, N){
+pve <- (2*(BETA^2)*MAF*(1 - MAF))/
+((2*(BETA^2)*MAF*(1 - MAF)) + ((SE^2)*2*N*MAF*(1 - MAF)))
+return(pve)
+}
+
+#Apply function to exposure effects
+dat_om$PVE <- mapply(PVEfx,
+dat_om$beta.exposure,
+dat_om$MAF,
+dat_om$se.exposure,
+N = 114999)
+
+# Calculate per-SNP F statistic
+dat_om$FSTAT <- ((114999 - 1 - 1)/1)*(dat_om$PVE/(1 - dat_om$PVE))
+
+# Calculate total instrument F statistic
+# Total PVE
+PVEtot_om <- sum(dat_om$PVE)
+
+#F-statistic
+FSTATtot_om <- ((114999 - 50 - 1)/ 50)*(PVEtot_om/(1 - PVEtot_om))
+
+```
+
+## PRIMARY MR ANALYSIS
+This  includes single SNP analysis using the inverse variance weighted method followed by an all SNPs analysis using the same method and then analysis using each of three other methods including the MR-Egger, Weighted median and Weighted mode. The 'generate_odds_ratios' function computes odds ratios and their corresponding confidence intervals for effects measured by each of the MR analysis methods.
+```{r Main MR, include=TRUE}
+
+# Single snp analysis using IVW method
+MR_ss_om <- mr_singlesnp(
+  dat_om,
+  parameters = default_parameters(),
+  single_method = "mr_wald_ratio",
+  all_method = "mr_ivw")
+
+# MR analysis with all 4 methods
+mr_res_om <- mr(dat_om, method_list = c("mr_ivw","mr_egger_regression", "mr_weighted_median", "mr_weighted_mode"))
+
+# Generate odds ratios and confidence intervals
+mr_res_om_ORs <- generate_odds_ratios(mr_res_om)
+
+```
+
+
+## SENSITIVITY ANALYSES
+In order to assess the validity of the causal inference made from the instrumental variable analyses above and to provide a more robust and reliable estimation of the causal effect between omega 3  and T1D,  several other sensitivity analyses are performed. Pleiotropy and heterogeneity tests for the main analysis and for each of the other analyses are also done as detailed below.
+
+## Pleiotropy and heterogeneity test for main analysis
+The 'mr_pleiotropy_test' method performs MR-Egger and returns intercept values while 
+'mr_heterogeneity' calculates Cochran's Q statistic and its corresponding p-value as measures of heterogeneity.
+```{r Sensitivity analysis for all snps, include=TRUE}
+#pleiotropy
+ple_om<-mr_pleiotropy_test(dat_om)
+
+#heterogeneity
+het_om<- mr_heterogeneity(dat_om)
+```
+
+##  MR and sensitivity analysis excluding proxy snps
+To check whether the observed causal effect is due to the proxy SNPs, we extract these from our harmonized data and repeat the MR analysis,  and heterogeneity tests using the remaining SNPS.
+```{r  MR, include=TRUE}
+
+#Extract outcome snps excluding proxies
+outcome_om_rmprx <- extract_outcome_data(snps=exposure_om$SNP, outcomes = "ebi-a-GCST010681", proxies = FALSE)
+
+#Harmonize snp data for IVs excluding proxies
+dat_om_rmprx <- harmonise_data(exposure_om, outcome_om_rmprx, action = 3)
+
+# MR analysis without proxy snps
+mr_res_om_rmprx <- mr(dat_om_rmprx, method_list = c("mr_ivw","mr_egger_regression", "mr_weighted_median", "mr_weighted_mode"))
+
+# Generate ORs and CIs
+mr_res_om_rmprx_ORs<- generate_odds_ratios(mr_res_om_rmprx)
+
+#pleiotropy test excluding proxy snps
+ple_om_rmprx<- mr_pleiotropy_test(dat_om_rmprx)
+
+#heterogeneity test excluding proxy snps
+het_om_rmprx<- mr_heterogeneity(dat_om_rmprx)
+
+```
+
+## Phenoscanner search for potentially pleiotropic snp-trait associations
+The PhenoScanner package is installed, loaded and then used to query the database to identify the SNPS among the instrumental variables that have associations with potentially confounding traits.
+```{r PhenoScanner search, include=TRUE}
+
+#Install PhenoScanner package
+install.packages("remotes", repos = "https://cran.r-project.org")
+remotes::install_github("phenoscanner/phenoscanner")
+library(phenoscanner)
+
+# Run phenoscanner analysis
+Pheno <- phenoscanner(snpquery= dat_om$SNP, pvalue = 5e-8) 
+
+# Extract results from PhenoScanner search
+Pheno_res <- Pheno$results
+
+# Extract SNP-trait associations in data frame
+Pheno_res2 <- data.frame(Pheno_res$snp, Pheno_res$trait)
+```
+
+SNP-trait associations are grouped into trait categories and categories likely to confound the omega3-T1D association are selected for further analysis. 
+
+## Extract harmonized data excluding lipid, blood, inflammation, body composition and T2D SNPs
+In this is step, harmonized data is extracted excluding snps from individual trait categories, that can potentially affect the Omega-3-T1D relationship, obtained through PhenoScanner. 
+```{r Harmonized data2,  include=TRUE}
+
+# harmonized data excluding lipid-associated snps
+dat_om_lipid <- dat_om[!((dat_om$SNP) %in% c("rs10184054","rs10455872","rs10184054","rs10455872","rs112875651","rs1132899","rs11563251","rs1167998","rs117733303","rs1260326","rs1800978","rs261290","rs5112","rs58542926","rs6129624","rs62466318","rs629301","rs633695","rs6601924","rs7819706","rs7970695","rs9304381","rs964184","rs9987289","rs9987289" )),]
+
+# harmonized data excluding blood-associated snps 
+dat_om_blood <- dat_om[!((dat_om$SNP) %in% c( "rs10184054","rs11242109","rs112875651","rs1167998", "rs117143374","rs1260326","rs139974673","rs16940904","rs174564","rs2394976","rs5112","rs58542926","rs62466318","rs673335","rs6882345","rs7819706","rs7924036","rs964184","rs9987289","rs7970695")),]
+  
+# harmonized data excluding inflammation-associated snps
+dat_om_inflam <- dat_om[!((dat_om$SNP) %in% c( "rs11242109", "rs1260326", "rs174564", "rs2394976", "rs7970695", "rs9987289")),]
+
+# harmonized data excluding T2D-associated snps
+dat_om_T2D <- dat_om[!((dat_om$SNP) %in% c( "rs1260326", "rs58542926")),]
+
+# harmonized data excluding body composition-associated snps
+dat_om_bodycomp <- dat_om[!((dat_om$SNP) %in% c("rs11242109","rs112875651","rs1260326","rs139974673","rs16940904","rs2394976","rs58542926","rs62466318",
+"rs6601924","rs72789541","rs7924036")),]
+
+```
+
+## MR and sensitivity analyses excluding lipid, blood, inflammation, body composition and T2D SNPs
+MR and sensitivity analyses with harmonized data from the previous step are conducted. Odds ratios and CIs for these analyses are also generated.  
+```{r Phenoscanner sensitivity analyses,  include=TRUE}
+
+# Create list for PhenoScanner categories
+dat_om_phenoexcl <- list(dat_om_blood, dat_om_bodycomp, dat_om_inflam, dat_om_lipid, dat_om_T2D)
+
+#Initialize an empty list to store the results
+phenoexcl_res_list <- list()
+
+# Loop over each dataset and run the mr() function
+for (i in seq_along(dat_om_phenoexcl)) {
+  phenoexcl_res_list[[i]] <- mr(dat = dat_om_phenoexcl[[i]], method_list = c("mr_ivw","mr_egger_regression", "mr_weighted_median", "mr_weighted_mode"))
+}
+
+##GENERATE ODDS RATIOS AND CIS
+#initialize an empty list to store the results
+OR_list <- list()
+
+# loop over each dataset from mr analysis to generate odds ratios
+for (i in seq_along(phenoexcl_res_list)) {
+  
+  OR_list[[i]] <- generate_odds_ratios(phenoexcl_res_list[[i]])
+}
+
+```
+
+
+Further sensitivity analyses are performed using snps associated with blood and inflammation categories combined and independently to test for their contribution to the observed causal effects in the previous step.
+```{r Phenoscanner sensitivity analyses2,  include=TRUE}
+
+# MR analysis using  blood/inflammation snps
+bld_snps <- dat_om[((dat_om$SNP) %in% c("rs10184054","rs11242109","rs112875651","rs1167998", "rs117143374","rs1260326","rs139974673","rs16940904","rs174564","rs2394976","rs5112","rs58542926","rs62466318","rs673335","rs6882345","rs7819706","rs7924036","rs964184","rs9987289","rs7970695")),]
+
+#MR analysis using only blood snps
+bld_snps_mr <- mr(dat=bld_snps,method_list = c("mr_ivw","mr_egger_regression", "mr_weighted_median", "mr_weighted_mode"))
+
+#Extracting harmonized data for only inflammation snps
+infl_snps <- dat_om[((dat_om$SNP) %in% c( "rs11242109", "rs1260326", "rs174564", "rs2394976", "rs7970695", "rs9987289")),]
+
+#MR analysis using only inflammation snps
+infl_snps_mr <- mr(dat=infl_snps,method_list = c("mr_ivw","mr_egger_regression", "mr_weighted_median", "mr_weighted_mode"))
+
+```
+
+## Pleiotropy and heterogeneity tests excluding lipid, blood, inflammation, body composition and T2D SNPs
+This step performs the pleiotropy and heterogeneity analyses with the five snp-trait categories excluded.
+```{r Phenoscanner categories sensitivity , include=TRUE}
+# #initialize an empty vector to store the results
+ple_pheno <- c()
+het_pheno <- c()
+
+for (i in seq_along(dat_om_phenoexcl)) {
+  ple_pheno[[i]] <- mr_pleiotropy_test(dat_om_phenoexcl[[i]])
+  het_pheno[[i]]<- mr_heterogeneity(dat_om_phenoexcl[[i]])
+  
+  #print(ple_pheno[[i]])
+  #print(het_pheno[[i]])
+}
+```
+
+## Run Mendelian Randomization- Pleiotropy RESidual Sum and Outlier(MR-PRESSO) test
+ The 'run_mr_presso' method uses the MR-PRESSO wrapper within the TwoSampleMR package to detect and correct for outliers and pleiotropic effects in MR analyses. 'NbDistribution = 1000' specifies the number of Monte Carlo simulations performed by MR-PRESSO to estimate the empirical distribution of the test statistic under the null hypothesis. The analysis is performed under a Significance value threshold of 0.05 below which implies statistical significance.
+```{r mr-presso, include=TRUE}
+
+presso <- run_mr_presso(dat_om, NbDistribution = 1000, SignifThreshold = 0.05)
+```
+
+## CREATE VISUALIZATIONS FOR MR ANALYSES
+
+## Generate scatterplot
+Create scatter plot with lines showing the causal estimate for different MR tests. The arguments used by the 'mr_scatter_plot' function are the results from the MR analysis and harmonized data used for that analysis.
+```{r scatterplot, include=TRUE}
+
+p1_om <- mr_scatter_plot(mr_res_om, dat_om)
+```
+
+## Generate forest plot for main MR single snp analysis
+```{r forestplot 1, include=TRUE}
+
+p2_om <- mr_forest_plot(MR_ss_om, exponentiate = FALSE)
+```
+
+## Generate forest plots for main MR and all sensitivity analyses
+```{r forestplots, include=TRUE}
+
+install.packages("forestplot", repos ="https://cran.r-project.org")
+library(forestplot)
+
+# Create vector for y-axis label names 
+tabs <- c("MR Analyses", "Main Analysis", "AXP", "AXB","AXBC","AXI","AXL", "AXT2D")
+
+# Odds ratios for each MR method
+IVW_ORs <-c(NA,0.92,0.92,0.63,1.00,0.81,0.92,0.92)
+MR_Egger_ORs <-c(NA,1.20,1.20,0.95,1.22,1.01,1.20,1.20)
+Weighted_median_ORs<-c(NA,1.15,1.15,0.88,1.15,0.90,1.16,1.15)
+Weighted_mode_ORs<-c(NA,1.12,1.12,0.88,1.13,0.89,1.13,1.13)
+
+#Lower confidence intervals for each MR method
+IVW_LCI<- c(NA,0.56,0.56,0.21,0.62,0.41,0.42,0.55)
+MR_Egger_LCI<- c(NA,0.61,0.60,0.13,0.65,0.29,0.46,0.59)
+Weighted_median_LCI<- c(NA,1.00,1.00,0.62,1.00,0.68,1.00,1.00)
+Weighted_mode_LCI <- c(NA,0.98,0.98,0.62,0.98,0.68,0.98,0.98)
+ 
+#Upper confidence intervals for each method 
+IVW_UCI <- c(NA,1.51,1.54,1.84,1.62,1.60,2.02,1.57)
+MR_Egger_UCI<- c(NA,2.35,2.38,6.83,2.30,3.55,3.13,2.43)
+Weighted_median_UCI<- c(NA,1.32,1.32,1.24,1.32,1.18,1.33,1.33)
+Weighted_mode_UCI<- c(NA,1.28,1.28,1.23,1.31,1.18,1.30,1.30)
+  
+# Generate forest plot
+forestplot(tabs,
+           txt_gp=fpTxtGp(ticks = gpar(cex=.8),
+                          xlab = gpar(cex=.8),
+                          label = gpar(cex=.8)),
+           legend=c("IVW","MR-Egger","Weighted median", "Weighted mode"),
+           fn.ci_norm=c(fpDrawNormalCI,fpDrawDiamondCI,fpDrawCircleCI,fpDrawPointCI),
+           is.summary= c(TRUE,rep(FALSE,7)),
+           mean= cbind(IVW_ORs,MR_Egger_ORs,Weighted_median_ORs,Weighted_mode_ORs),
+           lower= cbind(IVW_LCI,MR_Egger_LCI,Weighted_median_LCI,Weighted_mode_LCI),
+           upper= cbind(IVW_UCI,MR_Egger_UCI,Weighted_median_UCI,Weighted_mode_UCI),
+           clip= c(0,7.0),
+           lty.ci= c(1,1,1,1),
+           lwd.ci= 1,
+           col = fpColors(box=c("blue","darkred","lightgreen","purple")),
+           vertices= TRUE,
+           xlab= "Odds Ratios for T1D per 1 SD change in omega-3 levels",
+           new_page= TRUE,
+           boxsize=.1,
+           #grid= TRUE
+           grid=structure(c(0,1,2,3,4,5,6,7), gp=gpar(lty=2,lwd=1)))
+
+```
+
