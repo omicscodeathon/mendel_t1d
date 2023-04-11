@@ -21,11 +21,11 @@ To run this project, you will need:
 * Install the required packages by running "install.packages('plyr', repos = "http://cran.us.r-project.org")
 remotes::install_github("MRCIEU/TwoSampleMR")".
 #### Data
-This project uses publicly available genetic data from the IEU OpenGWAS project. The data can be obtained from the OpenGWAS website (https://gwas.mrcieu.ac.uk/) using the dataset IDs indicated in the R script (MR_Omega3_T1d.Rmd).
+This project uses publicly available genetic data from the IEU OpenGWAS project. The data can be obtained from the OpenGWAS website (https://gwas.mrcieu.ac.uk/) using the dataset IDs indicated in the file named "GWAS_Summary_data.txt" in the data folder.
 
 ## Running the Analysis
 * Open the MR_Omega3_T1d.Rmd file in the scripts folder in RStudio.
-* Knit the file to generate the analysis report (mr_T1d.html).
+* Knit the file to generate the analysis report (Omega3_T1d.pdf).
 * View the report to see the results of the MR analysis.
 
 ## Project Workflow
@@ -36,18 +36,21 @@ This project uses publicly available genetic data from the IEU OpenGWAS project.
 This repository is structured as follows:
 
 * data: Contains the raw data files used in the analysis.
+* docs: Contains the project presentation and links to papers some papers used for this project.
+* figures: Contains plots generated to aid interpretation of the MR analysis.
+* output: Contains the MR analysis results and supplementary material.
 * scripts: Contains the instrumental variable selection and statistical analysis scripts.
-* output: Contains the MR analysis results.
 * README.md: Contains a summary of the project documentation.
 
 ## Authors
 * Joachim Ssenkaali
 * Onan Mulumba
 * Lydia Abolo
+* Awe Olaitan
 
 
 ## Acknowledgments
-We thank IEU OpenGWAS for providing access to their data.
+We thank the MRC Integrative Epidemiology Unit (IEU) at the University of Bristol for availing open source data that was used for this study.  We also acknowledge the African Society for Bioinformatics and Computational Biology and the NIH Office of Data Science Strategy for their support.
 
 ## References
 * Smith GD, Ebrahim S. Mendelian randomization: prospects, potentials, and limitations. Int J Epidemiol. 2004;33(1):30-42.
