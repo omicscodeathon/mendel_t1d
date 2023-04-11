@@ -21,10 +21,10 @@ To run this project, you will need:
 * Install the required packages by running "install.packages('plyr', repos = "http://cran.us.r-project.org")
 remotes::install_github("MRCIEU/TwoSampleMR")".
 #### Data
-This project uses publicly available genetic data from the IEU OpenGWAS project. The data can be obtained from the OpenGWAS website (https://gwas.mrcieu.ac.uk/) using the dataset IDs indicated in the R script (mr_T1d.Rmd).
+This project uses publicly available genetic data from the IEU OpenGWAS project. The data can be obtained from the OpenGWAS website (https://gwas.mrcieu.ac.uk/) using the dataset IDs indicated in the R script (MR_Omega3_T1d.Rmd).
 
 ## Running the Analysis
-* Open the mr_T1d.Rmd file in the scripts folder in RStudio.
+* Open the MR_Omega3_T1d.Rmd file in the scripts folder in RStudio.
 * Knit the file to generate the analysis report (mr_T1d.html).
 * View the report to see the results of the MR analysis.
 
