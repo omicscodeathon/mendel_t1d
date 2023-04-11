@@ -1,13 +1,13 @@
 # Exploring the Causal Effect of Omega-3 Fatty acid  Levels on Risk of Type 1 Diabetes: A Mendelian Randomization Study
 
 ## Background
-Type 1 diabetes mellitus (T1D) is a chronic autoimmune disease characterized by the destruction of insulin-producing pancreatic beta cells and an ensuing lack of or low insulin. Previous research on risk factors for diabetes have shown that abnormalities in serum levels of essential trace elements may be associated with T1D. As demonstrated by previous studies, zinc metabolism appears to be altered in prediabetes and diabetes indicating its likely role in the pathophysiology of  T1D. While observational studies have been instrumental in decoding the association between zinc deficiency and diabetes, these studies are limited by potential confounders and reverse causality. A limited number of randomized controlled trials (RCTs) investigating glycemic control and zinc supplementation have been conducted. However, there’s a lack of agreement on the effect of zinc on glycemic control. An alternative approach to inferring causality between exposures and outcomes is Mendelian randomization (MR). MR studies use genetic variants that serve as a robust proxy for an environmentally modifiable exposure in order to make causal inferences about the outcome.
+Type 1 diabetes mellitus (T1D) is a chronic autoimmune disease characterized by the destruction of insulin-producing pancreatic beta cells and an ensuing lack of or low insulin. The burden of T1D is vast and as of 2021, an estimated 8.4 million people were living with the disease across the globe. It is predicted that by 2040, this number could increase to up to 17.4 million people. Despite nearly a century of insulin therapy for alleviating hyperglycaemia and the accompanying symptoms of T1D, no therapies exist to treat the underlying etiopathology of the disease. As evidenced by several studies, dietary interventions could offer a cost-effective approach to lowering the risk of T1D. The role of fatty acid status in the development of T1D has been of notable interest to researchers. Particularly, adequate dietary intake of omega-3 fatty acids (ω-3) has been reported to be associated with reduced risk of developing T1D. Given the inconclusive evidence from observational studies and RCTs, we conducted a Mendelian randomization (MR) study to explore the relationship between omega-3 fatty acids  intake and T1D. 
 
 ## Project description
 This project uses MR to investigate the causal effect of omega-3 levels on risk of Type 1 diabetes mellitus using genetic variants from Genome-wide association study (GWAS) summary statistics. 
 
 ## Getting started
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+These instructions will get you a copy of the project up and running on your local machine for your own analysis.
 #### Prerequisites
 To run this project, you will need:
 * R software (version 4.0 or later)
