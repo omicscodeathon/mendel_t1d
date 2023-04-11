@@ -1,2 +1,5 @@
 Here are the links for some papers being used for this project:
-https://
+
+https://pubmed.ncbi.nlm.nih.gov/15075143/ : Mendelian randomization: prospects, potentials, and limitations.
+https://doi.org/10.1093/aje/kwt084 : Efficient design for Mendelian randomization studies: subsample and 2-sample instrumental variable estimators.
+https://doi.org/10.1201/9780429324352 : Mendelian Randomization Methods for Causal Inference Using Genetic Variants
