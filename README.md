@@ -49,7 +49,7 @@ This repository is structured as follows:
 * Awe Olaitan
 
 
-## Acknowledgments
+## Acknowledgements
 We thank the MRC Integrative Epidemiology Unit (IEU) at the University of Bristol for availing open source data that was used for this study.  We also acknowledge the African Society for Bioinformatics and Computational Biology and the NIH Office of Data Science Strategy for their support.
 
 ## References
